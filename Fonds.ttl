@@ -1,0 +1,221 @@
+@prefix dash:    <http://datashapes.org/dash#> .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix file:    <https://regionaalarchieftilburg.memorix.io/resources/recordtypes/File#> .
+@prefix fonds:   <https://regionaalarchieftilburg.memorix.io/resources/recordtypes/Fonds#> .
+@prefix html:    <http://www.w3.org/1999/xhtml/> .
+@prefix memorix: <http://memorix.io/ontology#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ric-dft: <https://www.ica.org/standards/RiC/vocabularies/documentaryFormTypes#> .
+@prefix ric-rst: <https://www.ica.org/standards/RiC/vocabularies/recordSetTypes#> .
+@prefix rico:    <https://www.ica.org/standards/RiC/ontology#> .
+@prefix rt:      <https://regionaalarchieftilburg.memorix.io/resources/recordtypes/> .
+@prefix saa:     <https://data.archief.amsterdam/ontology#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+fonds:managementGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Manage"@en , "Beheer"@nl;
+        sh:order    3.0 .
+
+fonds:contentDescriptionGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Description"@en , "Beschrijving"@nl;
+        sh:order    2.0 .
+
+rt:Fonds  rdf:type            memorix:Recordtype , sh:NodeShape;
+        rdfs:comment          "Record type for fonds"@en , "Stadsarchief recordtype voor Archiefblok"@nl;
+        rdfs:label            "Archiefblok"@nl , "Fonds"@en;
+        memorix:hasInformationComponent
+                [ rdf:type  memorix:DepotLocationComponent ];
+        memorix:hasInformationComponent
+                [ rdf:type         memorix:TreeComponent;
+                  memorix:hasLeaf  [ memorix:hasRecordType  rt:File;
+                                     memorix:path           file:fonds
+                                   ];
+                  memorix:hasNode  [ memorix:hasRecordType  rt:Series;
+                                     memorix:inlineField    [ memorix:order  2.0;
+                                                              memorix:path   rico:title
+                                                            ];
+                                     memorix:inlineField    [ memorix:order  1.0;
+                                                              memorix:path   rico:identifier
+                                                            ]
+                                   ];
+                  dc:title         "Groepen"@nl , "Series"@en
+                ];
+        memorix:hasInformationComponent
+                [ rdf:type               memorix:HasRecordsComponent;
+                  memorix:hasRecordType  rt:File;
+                  memorix:path           file:fonds;
+                  dc:title               "Bestanddelen"@nl , "Files"@en
+                ];
+        memorix:typeOf        memorix:Fonds;
+        dc:identifier         "Fonds";
+        sh:closed             true;
+        sh:ignoredProperties  ( rdf:type );
+        sh:property           [ rdfs:comment          "Title or description of the fonds. Must start with 'Archief' or 'Collectie' (Dutch)"@en , "Naam of beschrijving van de toegang. Moet altijd beginnen met Archief of Collectie."@nl;
+                                rdfs:label            "Naam toegang"@nl , "Name of the fonds"@en;
+                                dash:editor           dash:TextAreaEditor;
+                                memorix:inTitleAt     2.0;
+                                memorix:searchWeight  5.0;
+                                html:placeholder      "Archief of Collectie van …"@nl;
+                                sh:datatype           xsd:string;
+                                sh:group              fonds:identificationGroup;
+                                sh:maxCount           1;
+                                sh:message            "The title of a fonds is mandatory"@en , "Naam toegang is verplicht."@nl;
+                                sh:minCount           1;
+                                sh:order              2.0;
+                                sh:path               rico:title
+                              ];
+        sh:property           [ rdfs:label   "Introduction"@en , "Inleiding"@nl;
+                                dash:editor  dash:TextAreaEditor;
+                                sh:datatype  xsd:string;
+                                sh:group     fonds:contentDescriptionGroup;
+                                sh:maxCount  1;
+                                sh:order     1.0;
+                                sh:path      rico:scopeAndContent
+                              ];
+        sh:property           [ rdfs:comment     "Jaartal van het oudste stuk in dit archief."@nl , "Year of the oldest record in the fonds"@en;
+                                rdfs:label       "Date oldest record"@en , "Datering (jaartal) oudste stuk"@nl;
+                                sh:datatype      xsd:gYear;
+                                sh:group         fonds:contentDescriptionGroup;
+                                sh:maxCount      1;
+                                sh:maxInclusive  "2200"^^xsd:gYear;
+                                sh:minInclusive  "1200"^^xsd:gYear;
+                                sh:order         5.0;
+                                sh:path          fonds:hasOldestRecord
+                              ];
+        sh:property           [ rdfs:comment  "Year or range of years of accumulation"@en , "Jaartal of periode van vorming."@nl;
+                                rdfs:label    "Periode vorming"@nl , "Dates of accumulation"@en;
+                                sh:class      fonds:DateRangeAccumulation;
+                                sh:group      fonds:identificationGroup;
+                                sh:maxCount   1;
+                                sh:message    "Enter one or two years"@en , "Geef een of twee jaartallen"@nl;
+                                sh:nodeKind   sh:BlankNode;
+                                sh:order      3.0;
+                                sh:path       rico:isAssociatedWithDate
+                              ];
+        sh:property           [ rdfs:comment      "Veld voor allerlei interne opmerkingen. Wordt niet gepubliceerd."@nl , "Divers remarks intended for internal administration"@en;
+                                rdfs:label        "Internal remarks"@en , "Interne opmerkingen"@nl;
+                                dash:editor       dash:TextAreaEditor;
+                                memorix:audience  memorix:AudienceInternal;
+                                sh:datatype       xsd:string;
+                                sh:group          fonds:managementGroup;
+                                sh:maxCount       1;
+                                sh:order          9.0;
+                                sh:path           saa:internalRemarks
+                              ];
+        sh:property           [ rdfs:comment     "Jaartal van het jongste stuk in dit archief."@nl , "Year of the youngest record in the fonds"@en;
+                                rdfs:label       "Datering (jaartal) jongste stuk"@nl , "Date youngest record"@en;
+                                sh:datatype      xsd:gYear;
+                                sh:group         fonds:contentDescriptionGroup;
+                                sh:maxCount      1;
+                                sh:maxInclusive  "2200"^^xsd:gYear;
+                                sh:minInclusive  "1200"^^xsd:gYear;
+                                sh:order         6.0;
+                                sh:path          fonds:hasYoungestRecord
+                              ];
+        sh:property           [ rdfs:comment      "Status van het archief."@nl , "Status of the fonds"@en;
+                                rdfs:label        "Status"@en , "Status"@nl;
+                                dash:editor       dash:EnumSelectEditor;
+                                memorix:audience  memorix:AudienceInternal;
+                                sh:datatype       xsd:string;
+                                sh:group          fonds:managementGroup;
+                                sh:in             ( "aanwezig" "nog niet aanwezig" "vervallen" "te vernietigen" "vernietigd" );
+                                sh:maxCount       1;
+                                sh:message        "Status is verplicht. Moet een van de volgende waardes zijn: aanwezig, nog niet aanwezig, vervallen, te vernietigen, vernietigd"@nl , "Must be one of the following (Dutch) terms: aanwezig, nog niet aanwezig, vervallen, te vernietigen, vernietigd. Mandatory."@en;
+                                sh:minCount       1;
+                                sh:order          10.0;
+                                sh:path           fonds:status
+                              ];
+        sh:property           [ rdfs:comment  "Gekoppelde archiefvormer uit de Personen en Organisatie thesaurus."@nl , "Related accumulator from list of Persons and Organisations"@en;
+                                rdfs:label    "Accumulator"@en , "Archiefvormer"@nl;
+                                dash:editor   memorix:LinkedRecordEditor;
+                                sh:group      fonds:identificationGroup;
+                                sh:maxCount   1000;
+                                sh:message    "Kies een archiefvormer uit de lijst."@nl;
+                                sh:nodeKind   sh:IRI;
+                                sh:or         ( [ sh:class  rt:Person ]
+                                                [ sh:class  rt:Organisation ]
+                                                [ sh:class  rt:Family ]
+                                              );
+                                sh:order      4.0;
+                                sh:path       rico:hasAccumulator
+                              ];
+        sh:property           [ rdfs:comment          "Unique number to identify the fonds"@en , "Unieke nummer van deze toegang"@nl;
+                                rdfs:label            "Fonds Number"@en , "Nummer toegang"@nl;
+                                memorix:inTitleAt     1.0;
+                                memorix:searchWeight  5.0;
+                                memorix:typeOf        memorix:Identifier;
+                                html:placeholder      "Bv 10003.A …"@nl;
+                                sh:datatype           xsd:string;
+                                sh:group              fonds:identificationGroup;
+                                sh:maxCount           1;
+                                sh:minCount           1;
+                                sh:order              1.0;
+                                sh:path               rico:identifier
+                              ];
+        sh:property           [ rdfs:label   "About the description"@en , "Inventarisatie"@nl;
+                                sh:class     fonds:FindingAid;
+                                sh:group     fonds:contentDescriptionGroup;
+                                sh:maxCount  10;
+                                sh:nodeKind  sh:BlankNode;
+                                sh:order     8.0;
+                                sh:path      rico:isOrWasDescribedBy
+                              ];
+        sh:targetClass        rt:Fonds .
+
+fonds:FindingAid  rdf:type    sh:NodeShape;
+        sh:closed             true;
+        sh:ignoredProperties  ( rdf:type );
+        sh:property           [ rdfs:label       "Inventarisatie jaar"@nl , "Year of inventory creation"@en;
+                                sh:datatype      xsd:gYear;
+                                sh:maxCount      1;
+                                sh:maxInclusive  "2200"^^xsd:gYear;
+                                sh:message       "The year must be between 1800 and 2200"@en , "Het jaar moet liggen tussen 1800 en 2200"@nl;
+                                sh:minInclusive  "1800"^^xsd:gYear;
+                                sh:order         1.0;
+                                sh:path          rico:publicationDate
+                              ];
+        sh:property           [ rdfs:label   "Inventory creator"@en , "Inventarisatie door"@nl;
+                                sh:datatype  xsd:string;
+                                sh:maxCount  1;
+                                sh:order     1.0;
+                                sh:path      rico:hasAuthor
+                              ];
+        sh:targetClass        fonds:FindingAid .
+
+fonds:DateRangeAccumulation
+        rdf:type              rdfs:Class , sh:NodeShape;
+        sh:closed             true;
+        sh:ignoredProperties  ( rdf:type );
+        sh:property           [ rdfs:label            "End Year"@en , "Eindjaar vorming"@nl;
+                                memorix:inSummaryAt   2.0;
+                                memorix:searchWeight  3.0;
+                                sh:datatype           xsd:gYear;
+                                sh:maxCount           1;
+                                sh:maxInclusive       "2200"^^xsd:gYear;
+                                sh:message            "Het jaar moet liggen tussen 1200 en 2200"@nl , "The year must be between 1200 and 2200"@en;
+                                sh:minInclusive       "1200"^^xsd:gYear;
+                                sh:order              2.0;
+                                sh:path               rico:hasEndDate
+                              ];
+        sh:property           [ rdfs:label            "Start Year"@en , "Beginjaar vorming"@nl;
+                                memorix:inSummaryAt   1.0;
+                                memorix:searchWeight  3.0;
+                                sh:datatype           xsd:gYear;
+                                sh:maxCount           1;
+                                sh:maxInclusive       "2200"^^xsd:gYear;
+                                sh:message            "Het jaar moet liggen tussen 1200 en 2200"@nl , "The year must be between 1200 and 2200"@en;
+                                sh:minInclusive       "1200"^^xsd:gYear;
+                                sh:order              1.0;
+                                sh:path               rico:hasBeginningDate
+                              ];
+        sh:targetClass        fonds:DateRangeAccumulation .
+
+fonds:identificationGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Identification"@en , "Identificatie"@nl;
+        sh:order    1.0 .

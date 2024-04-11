@@ -1,0 +1,145 @@
+@prefix contract:     <https://regionaalarchieftilburg.memorix.io/resources/recordtypes/Contract#> .
+@prefix dash:         <http://datashapes.org/dash#> .
+@prefix dc:           <http://purl.org/dc/elements/1.1/> .
+@prefix html:         <http://www.w3.org/1999/xhtml/> .
+@prefix memorix:      <http://memorix.io/ontology#> .
+@prefix rdf:          <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:         <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rt:           <https://regionaalarchieftilburg.memorix.io/resources/recordtypes/> .
+@prefix schema:       <http://schema.org/> .
+@prefix sh:           <http://www.w3.org/ns/shacl#> .
+@prefix skos:         <http://www.w3.org/2004/02/skos/core#> .
+@prefix vocabularies: <https://regionaalarchieftilburg.memorix.io/resources/vocabularies/conceptschemes/> .
+@prefix xsd:          <http://www.w3.org/2001/XMLSchema#> .
+
+contract:objectsGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Objects involved"@en , "Betrokken objecten"@nl;
+        sh:order    3.0 .
+
+contract:partiesGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Parties" , "Partijen"@nl;
+        sh:order    2.0 .
+
+contract:agreementsGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Agreements"@en , "Afspraken"@nl;
+        sh:order    4.0 .
+
+contract:identificationGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Identification"@en , "Identificatie"@nl;
+        sh:order    1.0 .
+
+rt:Contract  rdf:type            memorix:Recordtype , sh:NodeShape;
+        rdfs:comment             "Regional Archive Tilburg - Record type for contract"@en , "Regionaal Archief Tilburg - Recordtype voor contract"@nl;
+        rdfs:label               "Contract"@en , "Contract"@nl;
+        dash:defaultViewForRole  dash:all;
+        memorix:hasInformationComponent
+                [ rdf:type  memorix:DigitalAssetComponent ];
+        dc:identifier            "Contract";
+        sh:closed                true;
+        sh:ignoredProperties     ( rdf:type );
+        sh:property              [ rdfs:label      "Betrokken ojecten"@nl , "Objects involved"@en;
+                                   dash:editor     memorix:LinkedRecordEditor;
+                                   sh:description  ""@nl , ""@en;
+                                   sh:group        contract:objectsGroup;
+                                   sh:maxCount     10;
+                                   sh:message      ""@nl , ""@en;
+                                   sh:nodeKind     sh:IRI;
+                                   sh:or           ( [ sh:class  rt:Fonds ]
+                                                     [ sh:class  rt:File ]
+                                                   );
+                                   sh:order        1.0;
+                                   sh:path         schema:objects
+                                 ];
+        sh:property              [ rdfs:label      "Geen einddatum"@nl , "No enddate"@en;
+                                   sh:datatype     xsd:boolean;
+                                   sh:description  ""@nl , ""@en;
+                                   sh:group        contract:identificationGroup;
+                                   sh:maxCount     1;
+                                   sh:message      ""@nl , ""@en;
+                                   sh:order        4.0;
+                                   sh:path         schema:perpetual
+                                 ];
+        sh:property              [ rdfs:label      "Agreement 3"@en , "Afspraak 3"@nl;
+                                   sh:datatype     xsd:boolean;
+                                   sh:description  ""@nl , ""@en;
+                                   sh:group        contract:agreementsGroup;
+                                   sh:maxCount     1;
+                                   sh:message      ""@nl , ""@en;
+                                   sh:order        3.0;
+                                   sh:path         schema:agr3
+                                 ];
+        sh:property              [ rdfs:label      "Agreement 2"@en , "Afspraak 2"@nl;
+                                   sh:datatype     xsd:boolean;
+                                   sh:description  ""@nl , ""@en;
+                                   sh:group        contract:agreementsGroup;
+                                   sh:maxCount     1;
+                                   sh:message      ""@nl , ""@en;
+                                   sh:order        2.0;
+                                   sh:path         schema:agr2
+                                 ];
+        sh:property              [ rdfs:label      "Enddate"@en , "Einddatum"@nl;
+                                   sh:datatype     xsd:date;
+                                   sh:description  ""@en , ""@nl;
+                                   sh:group        contract:identificationGroup;
+                                   sh:order        3.0;
+                                   sh:path         schema:endDate
+                                 ];
+        sh:property              [ rdfs:label      "2nd party"@en , "Partij 2"@nl;
+                                   dash:editor     memorix:LinkedRecordEditor;
+                                   sh:description  ""@nl , ""@en;
+                                   sh:group        contract:partiesGroup;
+                                   sh:maxCount     1;
+                                   sh:message      ""@en , ""@nl;
+                                   sh:nodeKind     sh:IRI;
+                                   sh:or           ( [ sh:class  rt:Organisation ]
+                                                     [ sh:class  rt:Person ]
+                                                     [ sh:class  rt:Family ]
+                                                   );
+                                   sh:order        2.0;
+                                   sh:path         schema:party2
+                                 ];
+        sh:property              [ rdfs:label           "1st Party"@en , "Partij 1"@nl;
+                                   dash:editor          memorix:LinkedRecordEditor;
+                                   memorix:inSummaryAt  1.0;
+                                   sh:description       ""@en , ""@nl;
+                                   sh:group             contract:partiesGroup;
+                                   sh:maxCount          1;
+                                   sh:message           ""@nl , ""@en;
+                                   sh:nodeKind          sh:IRI;
+                                   sh:or                ( [ sh:class  rt:Organisation ]
+                                                          [ sh:class  rt:Person ]
+                                                          [ sh:class  rt:Family ]
+                                                        );
+                                   sh:order             1.0;
+                                   sh:path              schema:party1
+                                 ];
+        sh:property              [ rdfs:label      "Afspraak 1"@nl , "Agreement 1"@en;
+                                   sh:datatype     xsd:boolean;
+                                   sh:description  ""@nl , ""@en;
+                                   sh:group        contract:agreementsGroup;
+                                   sh:maxCount     1;
+                                   sh:message      ""@nl , ""@en;
+                                   sh:order        1.0;
+                                   sh:path         schema:agr1
+                                 ];
+        sh:property              [ rdfs:label         "Contractnummer"@nl , "Contractnumber"@en;
+                                   memorix:inTitleAt  1.0;
+                                   sh:datatype        xsd:string;
+                                   sh:description     ""@nl , ""@en;
+                                   sh:group           contract:identificationGroup;
+                                   sh:maxCount        1;
+                                   sh:order           1.0;
+                                   sh:path            schema:contractnumber
+                                 ];
+        sh:property              [ rdfs:label      "Startdate"@en , "Startdatum"@nl;
+                                   sh:datatype     xsd:date;
+                                   sh:description  ""@en , ""@nl;
+                                   sh:group        contract:identificationGroup;
+                                   sh:order        2.0;
+                                   sh:path         schema:startDate
+                                 ];
+        sh:targetClass           rt:Contract .
